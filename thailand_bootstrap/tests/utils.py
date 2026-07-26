@@ -34,6 +34,9 @@ _PREREQUISITES = (
 		"price_list_name",
 		{"selling": 1, "currency": "THB", "enabled": 1},
 	),
+	# AddressTemplate.validate() auto-fills `template` and sets
+	# is_default=1 itself when it's the first one -- just needs creating.
+	("Address Template", "Thailand", "country", {}),
 )
 
 
@@ -109,6 +112,7 @@ def make_company_address(company):
 	any real company before its first transaction, so the transactional
 	smoke test needs it too.
 	"""
+	_ensure_global_prerequisites()
 	address = frappe.new_doc("Address")
 	address.address_title = company
 	address.address_type = "Billing"
