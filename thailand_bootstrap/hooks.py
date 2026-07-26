@@ -16,6 +16,12 @@ after_install = "thailand_bootstrap.install.after_install"
 
 doc_events = {
     "Company": {
-        "after_insert": "thailand_bootstrap.api.on_company_created",
+        # Deliberately on_update, not after_insert: ERPNext's own Company.on_update
+        # (erpnext/setup/doctype/company/company.py) is what actually creates the
+        # Chart of Accounts, and Document.hook()'s composer always runs the
+        # controller's own on_update before this app's registered handler. Wiring
+        # this to after_insert instead would fire before any accounts exist at
+        # all, and every account-creation step would fail every time.
+        "on_update": "thailand_bootstrap.api.on_company_created",
     }
 }

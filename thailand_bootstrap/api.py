@@ -131,13 +131,16 @@ def deprovision(company, confirm=False):
 
 
 def on_company_created(doc, method=None):
-	"""Company.after_insert hook. Deliberately never raises — Company
-	creation itself must never fail because of this module. A company left
-	not-yet-provisioned (e.g. because provisioning threw) is truthfully
-	reported as such by verify()/is_thailand_ready(), and can be finished
-	later with `provision(company, force=True)`.
+	"""Company.on_update hook, guarded to only act on the document's initial
+	insert (see doc.flags.in_insert below) — wired to on_update rather than
+	after_insert specifically so this runs after ERPNext's own on_update has
+	already created the Chart of Accounts (see hooks.py for why). Deliberately
+	never raises — Company creation itself must never fail because of this
+	module. A company left not-yet-provisioned (e.g. because provisioning
+	threw) is truthfully reported as such by verify()/is_thailand_ready(),
+	and can be finished later with `provision(company, force=True)`.
 	"""
-	if doc.country != TRIGGER_COUNTRY:
+	if not doc.flags.in_insert or doc.country != TRIGGER_COUNTRY:
 		return
 
 	try:
