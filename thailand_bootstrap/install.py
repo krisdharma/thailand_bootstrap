@@ -7,7 +7,7 @@ TAGGED_DOCTYPES = [
 	"Sales Taxes and Charges Template",
 	"Purchase Taxes and Charges Template",
 	"Item Tax Template",
-	"Withholding Tax Type",
+	"Withholding Tax Type Account",
 	"Thai Tax Settings Company",
 ]
 
