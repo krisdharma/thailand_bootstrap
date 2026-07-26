@@ -44,6 +44,7 @@ class TestTransactionalSmoke(FrappeTestCase):
 		si.company = company
 		si.posting_date = today()
 		si.due_date = today()
+		si.currency = "THB"
 		si.append(
 			"items",
 			{
