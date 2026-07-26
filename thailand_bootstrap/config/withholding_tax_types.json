@@ -1,0 +1,10 @@
+[
+  { "title": "WHT 1% (Pay)", "percent": 1, "for_payment_type": "Pay", "account_key": "withholding_tax_payable" },
+  { "title": "WHT 1% (Receive)", "percent": 1, "for_payment_type": "Receive", "account_key": "withholding_tax_receivable" },
+  { "title": "WHT 2% (Pay)", "percent": 2, "for_payment_type": "Pay", "account_key": "withholding_tax_payable" },
+  { "title": "WHT 2% (Receive)", "percent": 2, "for_payment_type": "Receive", "account_key": "withholding_tax_receivable" },
+  { "title": "WHT 3% (Pay)", "percent": 3, "for_payment_type": "Pay", "account_key": "withholding_tax_payable" },
+  { "title": "WHT 3% (Receive)", "percent": 3, "for_payment_type": "Receive", "account_key": "withholding_tax_receivable" },
+  { "title": "WHT 5% (Pay)", "percent": 5, "for_payment_type": "Pay", "account_key": "withholding_tax_payable" },
+  { "title": "WHT 5% (Receive)", "percent": 5, "for_payment_type": "Receive", "account_key": "withholding_tax_receivable" }
+]

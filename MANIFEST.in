@@ -1,0 +1,7 @@
+include MANIFEST.in
+include *.json
+include *.md
+recursive-include thailand_bootstrap *.json
+recursive-include thailand_bootstrap *.py
+recursive-include thailand_bootstrap *.md
+recursive-exclude thailand_bootstrap *.pyc

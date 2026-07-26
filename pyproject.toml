@@ -1,0 +1,16 @@
+[project]
+name = "thailand_bootstrap"
+authors = [
+    { name = "Kris Dharma", email = "mr.krisdharma@gmail.com" }
+]
+description = "First-party provisioning module: makes any ERPNext Company with country=Thailand fully VAT/WHT-ready automatically, idempotently, on top of erpnext_thailand."
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = []
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.dev-dependencies]

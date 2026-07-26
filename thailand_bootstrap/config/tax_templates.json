@@ -1,0 +1,48 @@
+[
+  {
+    "doctype": "Sales Taxes and Charges Template",
+    "title": "VAT 7% - Product (Output)",
+    "account_key": "sales_tax_account",
+    "rate": 7,
+    "charge_type": "On Net Total"
+  },
+  {
+    "doctype": "Sales Taxes and Charges Template",
+    "title": "VAT 7% - Service (Output Undue)",
+    "account_key": "sales_tax_account_undue",
+    "rate": 7,
+    "charge_type": "On Net Total"
+  },
+  {
+    "doctype": "Purchase Taxes and Charges Template",
+    "title": "VAT 7% - Product (Input)",
+    "account_key": "purchase_tax_account",
+    "rate": 7,
+    "charge_type": "On Net Total"
+  },
+  {
+    "doctype": "Purchase Taxes and Charges Template",
+    "title": "VAT 7% - Service (Input Undue)",
+    "account_key": "purchase_tax_account_undue",
+    "rate": 7,
+    "charge_type": "On Net Total"
+  },
+  {
+    "doctype": "Item Tax Template",
+    "title": "VAT 7% - Standard",
+    "account_key": "sales_tax_account",
+    "rate": 7
+  },
+  {
+    "doctype": "Item Tax Template",
+    "title": "VAT 0% - Zero-Rated",
+    "account_key": "sales_tax_account",
+    "rate": 0
+  },
+  {
+    "doctype": "Item Tax Template",
+    "title": "VAT Exempt",
+    "account_key": "sales_tax_account",
+    "rate": 0
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "key": "sales_tax_account",
+    "account_name": "Output VAT",
+    "root_type": "Liability",
+    "account_type": "Tax",
+    "tax_rate": 7,
+    "parent_group_candidates": ["Duties and Taxes", "อากรและภาษี"],
+    "parent_group_default": {
+      "account_name": "Duties and Taxes",
+      "root_type": "Liability"
+    }
+  },
+  {
+    "key": "sales_tax_account_undue",
+    "account_name": "Undue Output VAT",
+    "root_type": "Liability",
+    "account_type": "Tax",
+    "tax_rate": 7,
+    "parent_group_candidates": ["Duties and Taxes", "อากรและภาษี"],
+    "parent_group_default": {
+      "account_name": "Duties and Taxes",
+      "root_type": "Liability"
+    }
+  },
+  {
+    "key": "purchase_tax_account",
+    "account_name": "Input VAT",
+    "root_type": "Asset",
+    "account_type": "Tax",
+    "tax_rate": 7,
+    "parent_group_candidates": ["Tax Assets", "สินทรัพย์ภาษี"],
+    "parent_group_default": {
+      "account_name": "Tax Assets",
+      "root_type": "Asset"
+    }
+  },
+  {
+    "key": "purchase_tax_account_undue",
+    "account_name": "Undue Input VAT",
+    "root_type": "Asset",
+    "account_type": "Tax",
+    "tax_rate": 7,
+    "parent_group_candidates": ["Tax Assets", "สินทรัพย์ภาษี"],
+    "parent_group_default": {
+      "account_name": "Tax Assets",
+      "root_type": "Asset"
+    }
+  },
+  {
+    "key": "withholding_tax_receivable",
+    "account_name": "Withholding Tax Receivable",
+    "root_type": "Asset",
+    "account_type": "Tax",
+    "tax_rate": null,
+    "parent_group_candidates": ["Tax Assets", "สินทรัพย์ภาษี"],
+    "parent_group_default": {
+      "account_name": "Tax Assets",
+      "root_type": "Asset"
+    }
+  },
+  {
+    "key": "withholding_tax_payable",
+    "account_name": "Withholding Tax Payable",
+    "root_type": "Liability",
+    "account_type": "Tax",
+    "tax_rate": null,
+    "parent_group_candidates": ["Duties and Taxes", "อากรและภาษี"],
+    "parent_group_default": {
+      "account_name": "Duties and Taxes",
+      "root_type": "Liability"
+    }
+  }
+]
