@@ -1,5 +1,5 @@
 import frappe
-from frappe.utils import random_string
+from frappe.utils import getdate, random_string, today
 
 # These are normally created by the Setup Wizard's install-fixtures step.
 # A site created via `bench new-site` + `install-app` (as any CI/test site
@@ -31,6 +31,29 @@ _PREREQUISITES = (
 )
 
 
+def _ensure_fiscal_year():
+	"""Setup Wizard normally creates a Fiscal Year covering "today". A
+	bench new-site + install-app site has none, so anything with a
+	posting_date (Sales Invoice, GL Entry, ...) fails with FiscalYearError.
+	Global, not company-scoped (an empty `companies` child table applies
+	to every company) -- create one covering the real current year, not
+	a hardcoded year, so this keeps working regardless of when it runs.
+	"""
+	year = getdate(today()).year
+	name = str(year)
+	if frappe.db.exists("Fiscal Year", name):
+		return
+	fy = frappe.get_doc(
+		{
+			"doctype": "Fiscal Year",
+			"year": name,
+			"year_start_date": f"{year}-01-01",
+			"year_end_date": f"{year}-12-31",
+		}
+	)
+	fy.insert(ignore_permissions=True)
+
+
 def _ensure_global_prerequisites():
 	for doctype, name, name_field, extra_fields in _PREREQUISITES:
 		if frappe.db.exists(doctype, name):
@@ -40,6 +63,7 @@ def _ensure_global_prerequisites():
 		doc = frappe.get_doc(fields)
 		doc.flags.ignore_mandatory = True
 		doc.insert(ignore_permissions=True)
+	_ensure_fiscal_year()
 
 
 def make_thai_company(country="Thailand", chart_of_accounts="Standard with Numbers"):
