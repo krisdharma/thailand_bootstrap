@@ -1,86 +1,14 @@
 import frappe
-from frappe.utils import getdate, random_string, today
-
-# These are normally created by the Setup Wizard's install-fixtures step.
-# A site created via `bench new-site` + `install-app` (as any CI/test site
-# is) never runs that step, so they don't exist yet — ensure them here
-# rather than assuming a Setup-Wizard-completed site, so this suite is
-# self-contained and safe to run against any fresh site.
-# (doctype, name, the field its autoname is keyed off — None means the
-# bare `name` is used directly, e.g. Warehouse Type's autoname is "Prompt")
-_PREREQUISITES = (
-	("Warehouse Type", "Transit", None, {}),
-	("Item Group", "All Item Groups", "item_group_name", {"is_group": 1}),
-	("UOM", "Nos", "uom_name", {}),
-	("Customer Group", "All Customer Groups", "customer_group_name", {"is_group": 1}),
-	("Territory", "All Territories", "territory_name", {"is_group": 1}),
-	# Leaf nodes: a Customer can't be assigned a group-type Customer
-	# Group/Territory directly (ERPNext rejects it), only a non-group leaf.
-	(
-		"Customer Group",
-		"_Test Customer Group",
-		"customer_group_name",
-		{"is_group": 0, "parent_customer_group": "All Customer Groups"},
-	),
-	(
-		"Territory",
-		"_Test Territory",
-		"territory_name",
-		{"is_group": 0, "parent_territory": "All Territories"},
-	),
-	(
-		"Price List",
-		"_Test Selling THB",
-		"price_list_name",
-		{"selling": 1, "currency": "THB", "enabled": 1},
-	),
-	# AddressTemplate.validate() auto-fills `template` and sets
-	# is_default=1 itself when it's the first one -- just needs creating.
-	("Address Template", "Thailand", "country", {}),
-)
-
-
-def _ensure_fiscal_year():
-	"""Setup Wizard normally creates a Fiscal Year covering "today". A
-	bench new-site + install-app site has none, so anything with a
-	posting_date (Sales Invoice, GL Entry, ...) fails with FiscalYearError.
-	Global, not company-scoped (an empty `companies` child table applies
-	to every company) -- create one covering the real current year, not
-	a hardcoded year, so this keeps working regardless of when it runs.
-	"""
-	year = getdate(today()).year
-	name = str(year)
-	if frappe.db.exists("Fiscal Year", name):
-		return
-	fy = frappe.get_doc(
-		{
-			"doctype": "Fiscal Year",
-			"year": name,
-			"year_start_date": f"{year}-01-01",
-			"year_end_date": f"{year}-12-31",
-		}
-	)
-	fy.insert(ignore_permissions=True)
-
-
-def _ensure_global_prerequisites():
-	for doctype, name, name_field, extra_fields in _PREREQUISITES:
-		if frappe.db.exists(doctype, name):
-			continue
-		fields = {"doctype": doctype, **extra_fields}
-		fields[name_field if name_field else "name"] = name
-		doc = frappe.get_doc(fields)
-		doc.flags.ignore_mandatory = True
-		doc.insert(ignore_permissions=True)
-	_ensure_fiscal_year()
+from frappe.utils import random_string
 
 
 def make_thai_company(country="Thailand", chart_of_accounts="Standard with Numbers"):
 	"""Create a throwaway Company for tests. `country` is a parameter (not
 	hardcoded to Thailand) so tests can prove the hook is inert for
 	non-Thai companies (see test_provision.test_non_thai_company_is_untouched).
+	Global fixtures (Item Group, Territory, Customer Group, UOM, ...) are
+	assumed to already exist -- see tests/setup.py's before_tests hook.
 	"""
-	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
 	company = frappe.new_doc("Company")
 	company.company_name = f"_Test Thai Co {suffix}"
@@ -93,11 +21,10 @@ def make_thai_company(country="Thailand", chart_of_accounts="Standard with Numbe
 
 
 def make_test_item(is_stock_item=0):
-	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
 	item = frappe.new_doc("Item")
 	item.item_code = f"_Test Thai Item {suffix}"
-	item.item_group = "All Item Groups"
+	item.item_group = "Services"
 	item.stock_uom = "Nos"
 	item.is_stock_item = is_stock_item
 	item.insert(ignore_permissions=True)
@@ -110,9 +37,9 @@ def make_company_address(company):
 	update_company_tax_address) -- not just a soft default-fill, as
 	validate_company_address on Payment Entry alone suggested. Needed by
 	any real company before its first transaction, so the transactional
-	smoke test needs it too.
+	smoke test needs it too. This is real, per-company setup, not a
+	fixture gap -- unlike everything in tests/setup.py.
 	"""
-	_ensure_global_prerequisites()
 	address = frappe.new_doc("Address")
 	address.address_title = company
 	address.address_type = "Billing"
@@ -126,11 +53,15 @@ def make_company_address(company):
 
 
 def make_test_customer():
-	_ensure_global_prerequisites()
+	"""Individual/Thailand are real Setup Wizard defaults (erpnext's
+	get_preset_records: Customer Group leaves are Individual/Commercial/Non
+	Profit/Government; the country-named Territory leaf is the install
+	country itself) -- not test-only inventions.
+	"""
 	suffix = random_string(6).upper()
 	customer = frappe.new_doc("Customer")
 	customer.customer_name = f"_Test Thai Customer {suffix}"
-	customer.customer_group = "_Test Customer Group"
-	customer.territory = "_Test Territory"
+	customer.customer_group = "Individual"
+	customer.territory = "Thailand"
 	customer.insert(ignore_permissions=True)
 	return customer.name

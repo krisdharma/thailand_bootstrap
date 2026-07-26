@@ -14,6 +14,11 @@ required_apps = ["erpnext", "erpnext_thailand"]
 
 after_install = "thailand_bootstrap.install.after_install"
 
+# Runs once before this app's test suite (frappe.testing.environment, the
+# same hook frappe's own frappe.utils.install:before_tests uses) -- see
+# thailand_bootstrap/tests/setup.py for what it does and why.
+before_tests = "thailand_bootstrap.tests.setup.before_tests"
+
 doc_events = {
     "Company": {
         # Deliberately on_update, not after_insert: ERPNext's own Company.on_update
