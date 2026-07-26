@@ -28,6 +28,12 @@ _PREREQUISITES = (
 		"territory_name",
 		{"is_group": 0, "parent_territory": "All Territories"},
 	),
+	(
+		"Price List",
+		"_Test Selling THB",
+		"price_list_name",
+		{"selling": 1, "currency": "THB", "enabled": 1},
+	),
 )
 
 
