@@ -14,6 +14,20 @@ _PREREQUISITES = (
 	("UOM", "Nos", "uom_name", {}),
 	("Customer Group", "All Customer Groups", "customer_group_name", {"is_group": 1}),
 	("Territory", "All Territories", "territory_name", {"is_group": 1}),
+	# Leaf nodes: a Customer can't be assigned a group-type Customer
+	# Group/Territory directly (ERPNext rejects it), only a non-group leaf.
+	(
+		"Customer Group",
+		"_Test Customer Group",
+		"customer_group_name",
+		{"is_group": 0, "parent_customer_group": "All Customer Groups"},
+	),
+	(
+		"Territory",
+		"_Test Territory",
+		"territory_name",
+		{"is_group": 0, "parent_territory": "All Territories"},
+	),
 )
 
 
@@ -62,7 +76,7 @@ def make_test_customer():
 	suffix = random_string(6).upper()
 	customer = frappe.new_doc("Customer")
 	customer.customer_name = f"_Test Thai Customer {suffix}"
-	customer.customer_group = "All Customer Groups"
-	customer.territory = "All Territories"
+	customer.customer_group = "_Test Customer Group"
+	customer.territory = "_Test Territory"
 	customer.insert(ignore_permissions=True)
 	return customer.name
