@@ -1,12 +1,35 @@
 import frappe
 from frappe.utils import random_string
 
+# These are normally created by the Setup Wizard's install-fixtures step.
+# A site created via `bench new-site` + `install-app` (as any CI/test site
+# is) never runs that step, so they don't exist yet — ensure them here
+# rather than assuming a Setup-Wizard-completed site, so this suite is
+# self-contained and safe to run against any fresh site.
+_PREREQUISITES = (
+	("Warehouse Type", "Transit", {}),
+	("Item Group", "All Item Groups", {"is_group": 1}),
+	("UOM", "Nos", {}),
+	("Customer Group", "All Customer Groups", {"is_group": 1}),
+	("Territory", "All Territories", {"is_group": 1}),
+)
+
+
+def _ensure_global_prerequisites():
+	for doctype, name, extra_fields in _PREREQUISITES:
+		if frappe.db.exists(doctype, name):
+			continue
+		doc = frappe.get_doc({"doctype": doctype, "name": name, **extra_fields})
+		doc.flags.ignore_mandatory = True
+		doc.insert(ignore_permissions=True)
+
 
 def make_thai_company(country="Thailand", chart_of_accounts="Standard with Numbers"):
 	"""Create a throwaway Company for tests. `country` is a parameter (not
 	hardcoded to Thailand) so tests can prove the hook is inert for
 	non-Thai companies (see test_provision.test_non_thai_company_is_untouched).
 	"""
+	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
 	company = frappe.new_doc("Company")
 	company.company_name = f"_Test Thai Co {suffix}"
@@ -19,6 +42,7 @@ def make_thai_company(country="Thailand", chart_of_accounts="Standard with Numbe
 
 
 def make_test_item(is_stock_item=0):
+	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
 	item = frappe.new_doc("Item")
 	item.item_code = f"_Test Thai Item {suffix}"
@@ -30,6 +54,7 @@ def make_test_item(is_stock_item=0):
 
 
 def make_test_customer():
+	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
 	customer = frappe.new_doc("Customer")
 	customer.customer_name = f"_Test Thai Customer {suffix}"
