@@ -21,13 +21,19 @@ from frappe.tests.utils import FrappeTestCase
 from frappe.utils import today
 
 from thailand_bootstrap import api
-from thailand_bootstrap.tests.utils import make_test_customer, make_test_item, make_thai_company
+from thailand_bootstrap.tests.utils import (
+	make_company_address,
+	make_test_customer,
+	make_test_item,
+	make_thai_company,
+)
 
 
 class TestTransactionalSmoke(FrappeTestCase):
 	def test_product_sales_invoice_posts_output_vat_and_creates_tax_invoice(self):
 		company = make_thai_company(country="Thailand")
 		self.assertTrue(api.verify(company)["ok"])
+		make_company_address(company)
 
 		accounts = self._account_names(company)
 

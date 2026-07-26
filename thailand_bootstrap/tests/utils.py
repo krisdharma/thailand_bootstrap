@@ -101,6 +101,26 @@ def make_test_item(is_stock_item=0):
 	return item.name
 
 
+def make_company_address(company):
+	"""erpnext_thailand hard-throws creating a Sales/Purchase Tax Invoice
+	without a Company Billing/Tax Address (custom_api.py::
+	update_company_tax_address) -- not just a soft default-fill, as
+	validate_company_address on Payment Entry alone suggested. Needed by
+	any real company before its first transaction, so the transactional
+	smoke test needs it too.
+	"""
+	address = frappe.new_doc("Address")
+	address.address_title = company
+	address.address_type = "Billing"
+	address.address_line1 = "1 Test Street"
+	address.city = "Bangkok"
+	address.country = "Thailand"
+	address.is_your_company_address = 1
+	address.append("links", {"link_doctype": "Company", "link_name": company})
+	address.insert(ignore_permissions=True)
+	return address.name
+
+
 def make_test_customer():
 	_ensure_global_prerequisites()
 	suffix = random_string(6).upper()
